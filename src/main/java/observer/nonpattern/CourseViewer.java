@@ -85,7 +85,7 @@ public class CourseViewer extends JFrame implements ActionListener,
 
 	/**
 	 * Add a new Course object
-	 * 
+	 *
 	 * @param courseRecord
 	 *            the CourseRecord to be added
 	 */
@@ -129,32 +129,43 @@ public class CourseViewer extends JFrame implements ActionListener,
 		}
 	}
 
-	public void paint(Graphics g) {
+	public void paint(Graphics g){
 		super.paint(g);
 		LayoutConstants.paintBarChartOutline(g, sliders.size());
+		double startAngle = 0.0;
+		double total = 0;
+		for(int i = 0; i < sliders.size(); i++){
+			total += sliders.get(i).getValue();
+		}
 		for (int i = 0; i < sliders.size(); i++) {
 			JSlider record = sliders.elementAt(i);
 			g.setColor(LayoutConstants.courseColours[i]);
+			int x = LayoutConstants.xOffset + (i + 1)
+					* LayoutConstants.barSpacing + i
+					* LayoutConstants.barWidth;
 			g.fillRect(
-					LayoutConstants.xOffset + (i + 1)
-							* LayoutConstants.barSpacing + i
-							* LayoutConstants.barWidth, LayoutConstants.yOffset
+					x, LayoutConstants.yOffset
 							+ LayoutConstants.graphHeight
 							- LayoutConstants.barHeight + 2
 							* (LayoutConstants.maxValue - record.getValue()),
 					LayoutConstants.barWidth, 2 * record.getValue());
+			//Pie chart
+			System.out.println(sliders.size());
+			double ratio = ((double)record.getValue() / total) * 360.0;
+			int radius = 50;
+			g.fillArc(LayoutConstants.xOffset, LayoutConstants.yOffset + 300, 2 * radius, 2 * radius, (int) startAngle, (int) ratio);
 			g.setColor(Color.red);
+			startAngle += ratio;
+
 			g.drawString(record.getName(),
-					LayoutConstants.xOffset + (i + 1)
-							* LayoutConstants.barSpacing + i
-							* LayoutConstants.barWidth, LayoutConstants.yOffset
+					x, LayoutConstants.yOffset
 							+ LayoutConstants.graphHeight + 20);
 		}
 	}
 
 	/**
 	 * Manages the creation of a new course. Called when "New Course" button is pressed.
-	 * 
+	 *
 	 * @param arg0
 	 *            not used
 	 */
@@ -167,7 +178,7 @@ public class CourseViewer extends JFrame implements ActionListener,
 
 	/**
 	 * Handles the changing of the marks for a course (changing of a JSlider)
-	 * 
+	 *
 	 * @param arg0
 	 *            not used
 	 */
@@ -175,10 +186,10 @@ public class CourseViewer extends JFrame implements ActionListener,
 		this.repaint();
 	}
 
-	
+
 	/**
 	 * Sets up an initial set of three courses
-	 * 
+	 *
 	 * @param args
 	 *            not used
 	 */
@@ -188,7 +199,7 @@ public class CourseViewer extends JFrame implements ActionListener,
 		viewer.addCourse(new CourseRecord("Chemistry", 50));
 		viewer.addCourse(new CourseRecord("Biology", 50));
 	}
-	
+
 	// Frame contents
 	private JPanel sliderPanel;
 
